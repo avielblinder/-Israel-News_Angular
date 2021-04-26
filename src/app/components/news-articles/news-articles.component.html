@@ -1,0 +1,130 @@
+  <mat-card class="example-card" *ngFor="let article of data.sort(handleSortArray()); index as num">
+    <mat-card-header>
+      <div mat-card-avatar [ngStyle]="{'background-image': 'url(../assets/images/'+ article.cleanUrl+'.png)'}" class="example-header-image"></div>
+      <mat-card-title class="title">{{article.title}}</mat-card-title>
+      <mat-card-subtitle>www.{{article.cleanUrl}}</mat-card-subtitle>
+    </mat-card-header>
+
+    <ng-template #cdn>
+      <video width="320" height="240" controls>
+        <source src={{article.media}} type="video/mp4">
+      </video>
+    </ng-template>
+
+    <div *ngIf="article.media != undefined; else noMedia">
+      <video class="article-image" preload="none" *ngIf="article.media.type == 'video/mp4'; else noType" width="100%" height="auto" controls id="bgvid">
+        <source src={{article.media.url}} type={{article.media.type}}>
+      </video>
+    </div>
+    <ng-template #noPoster>
+      <video class="article-image" preload="none" controls id="bgvid" poster="../assets/images/null.png" >
+        <source src={{article.media.url}} type={{article.media.type}}>
+      </video>
+    </ng-template>
+    <ng-template #noMedia>
+      <div *ngIf="!article.image|| article.image == '' && !article.media;cdn">
+        <img class=" defualt-image" loading="lazy"  src="../assets/images/null.png" alt="default image">
+      </div>
+    </ng-template>
+    <ng-template #notObj>
+        <img class="article-image" loading="lazy" height="auto" src={{article.media}} alt="">
+    </ng-template>
+    <ng-template #noType>
+      <div *ngIf="article.media.hasOwnProperty('url');else notObj">
+        <div  *ngIf="article.media.type != 'audio/mpeg';else noPoster">
+          <img class="article-image" loading="lazy" height="auto" src={{article.media.url}} alt={{article.title}}>
+        </div>
+      </div>
+    </ng-template>
+    <mat-card-content class="mt-3">
+      <div *ngIf="article.categories;" class="d-flex justify-content-end">
+        <span *ngFor="let item of article.categories" class="bg-danger text-white m-1 rounded p-1 tags-span" > {{item}}# </span>
+      </div>
+
+      <div *ngIf="article.category;else noCat">
+        <div *ngIf="article.category[0]._;else notObj" class="d-flex justify-content-end">
+          <span *ngFor="let item of article.category" class="bg-danger text-white m-1 rounded p-1 tags-span" > {{item._}}# </span>
+        </div>
+        <ng-template #notObj>
+          <div class="d-flex justify-content-end">
+            <span *ngFor="let item of article.category" class="bg-danger text-white m-1 rounded p-1 tags-span"> {{item}}# </span>
+          </div>
+        </ng-template>
+      </div>
+      <ng-template #noCat>
+        <div *ngIf="article.Tags;">
+          <div *ngIf="!article.Tags[0].includes(1,2,3,4,5,6,7,8,9)" class="d-flex justify-content-end">
+            <span *ngFor="let item of article.Tags[0].split(',')" class="bg-danger text-white m-1 rounded p-1 tags-span"> {{item}}# </span>
+          </div>
+        </div>
+      </ng-template>
+
+      <div *ngIf="article.description != ''" class="article-p">
+        <div class="read-less" *ngIf="article.AllDescription.length > 110;else smallDesc">
+
+
+          <span id="expendedText" *ngIf="!toggleBtn.checked"> {{article.description}} </span>
+
+          <span class="flex-start" *ngIf="toggleBtn.checked" id="expendedText"> {{article.AllDescription}} </span>
+
+          <mat-button-toggle id="toggleBtn" #toggleBtn (click)="handleClick($event)">  הצג עוד </mat-button-toggle>
+
+        </div>
+        <ng-template #smallDesc>
+          <span id="expendedText">{{article.description}}</span>
+        </ng-template>
+      </div>
+    </mat-card-content>
+    <mat-card-actions class="action-buttons d-flex justify-content-center mb-2">
+
+      <button (click)="handleCommentBox(article.id)" mat-button color="primary" ><mat-icon>comment</mat-icon> הגב</button>
+      <button class="share-btn primary" mat-menu-item [matMenuTriggerFor]="shareOP"><mat-icon color="primary" class="share-icon">share</mat-icon> שתף </button>
+
+      <mat-menu #shareOP="matMenu" >
+        <div >
+          <share-buttons [theme]="'modern-dark'"
+          [include]="['facebook','twitter','whatsapp']"
+          [show]="4"
+          [url]="article.link[0]"
+          [autoSetMeta]="false"
+          ></share-buttons>
+        </div>
+      </mat-menu>
+
+        <ng-template #toLink>
+          <a class="readBtn" mat-button color="primary" href={{article.guid[0]._}} target="_blank" ><mat-icon>visibility</mat-icon> קרא עוד</a>
+        </ng-template>
+      <button class="readBtn" *ngIf="article.link[0];else toLink">
+        <a class="read-ancor" mat-button color="primary" href={{article.link[0]}} target="_blank" ><mat-icon>visibility</mat-icon> קרא עוד</a>
+      </button>
+    </mat-card-actions>
+
+    <div *ngFor="let comment of this.comments;let odd = odd">
+      <div *ngIf="comment.newsId == article.id">
+        <div class="row border m-1 rounded" [ngClass]="{'stripes': odd}">
+          <div class="col-12">
+            <span class="float-left">{{comment.createdAt | date:'dd/MM/yy'}}</span>
+            <span class="font-weight-bold p-0 m-0"> {{comment.name}}</span>
+            <p class="font-italic p-0 m-0 pb-1"> {{comment.article}}</p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+      <div class="commentBox" id={{article.id}} style="display: none;">
+        <form class="p-3">
+          <div class="mb-3">
+            <label for="exampleInputEmail1" class="form-label">שם</label>
+            <input type="text" class="form-control title-input" id="exampleInputEmail1" #name>
+          </div>
+          <div class="mb-3">
+            <label for="exampleInputPassword1" class="form-label">תגובה</label>
+            <textarea class="form-control" rows="3" spellcheck id="exampleInputPassword1" placeholder="...כתוב משהו" #text name="text"></textarea>
+          </div>
+          <div class="text-center">
+            <button type="submit" class="btn btn-primary" (click)="handlePostNews($event,article.id,name.value,text.value)">הגב</button>
+          </div>
+        </form>
+      </div>
+
+      </mat-card>

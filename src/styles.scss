@@ -1,1 +1,22 @@
-/* You can add global styles to this file, and also import other style files */
+@import "~@angular/material/prebuilt-themes/indigo-pink.css";
+@import "~ngx-sharebuttons/themes/default/default-theme";
+@import "~ngx-toastr/toastr";
+
+body {
+  text-align: right;
+  margin: 0 auto;
+  background: rgb(245, 243, 243);
+  overflow-x: hidden;
+  padding: 0;
+}
+
+@media only screen and (min-width: 800px) {
+  body {
+    padding: 0 23%;
+    width: 100%;
+  }
+}
+.mat-button-toggle-button:focus {
+  outline: none !important;
+}
+
