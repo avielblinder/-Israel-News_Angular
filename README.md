@@ -120,4 +120,4 @@ $ yarn run start
 ## Free Experience
 
 > "You can enjoy free access to **Israel-News** with no download in
-> [Click To Open]() ." or download APK file [Click To Download]() ."
+> [Click To Open](https://elated-aryabhata-9fce50.netlify.app/) ." or download APK for Android phone file [Click To Download](https://drive.google.com/file/d/1SFPs9l_ZFLaKU8lZ0ISzpPMgEfoMH8oK/view?usp=drivesdk) ."
